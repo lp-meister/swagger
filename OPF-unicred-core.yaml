@@ -1,0 +1,637 @@
+openapi: 3.0.0
+info: 
+  title: "[Unicred] Open Finance Brasil - Core"
+  description: "API de marcas e clientes que autorizaram uso dos dados através do Open Finance Brasil."
+  version: "1.0.0-RC1"
+servers:
+  - url: 'https://api.e-unicred.com.br/unicred/open-finance/v1'
+    description: Servidor de Produção
+  - url: 'https://api.e-unicred.com.br/homolog/unicred/open-finance/v1'
+    description: Servidor de Homologação
+paths: 
+  /clients/{clientId}: 
+    get: 
+      summary: "Método para obter os dados de identificação do cliente que possui consentimento autorizado por clientId."
+      description: "Método para obter os dados de identificação do cliente que possui consentimento autorizado por clientId."
+      parameters: 
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/client_id'
+        - $ref: '#/components/parameters/clientId'
+      responses:
+        '200':
+          $ref: '#/components/responses/OKResponseClient'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/OKResponseClient'
+      security:
+        - OpenId:
+            - openid
+          OAuth2Security:
+            - 'client_id'
+            - 'acccess_token'
+  /clients: 
+    get: 
+      summary: "Método para obter os dados de identificação dos clientes com consentimento autorizado."
+      description: "Método para obter os dados de identificação dos clientes com consentimento autorizado."
+      parameters: 
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/client_id'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+      responses:
+        '200':
+          $ref: '#/components/responses/OKResponseClientList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/OKResponseClientList'
+      security:
+        - OpenId:
+            - openid
+          OAuth2Security:
+            - 'client_id'
+            - 'acccess_token'
+  /brands/{brandId}: 
+    get: 
+      summary: "Método para obter os dados de identificação da marca por brandId."
+      description: "Método para obter os dados de identificação da marca por brandId."
+      parameters: 
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/client_id'
+        - $ref: '#/components/parameters/brandId'
+      responses:
+        '200':
+          $ref: '#/components/responses/OKResponseBrand'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/OKResponseBrand'
+      security:
+        - OpenId:
+            - openid
+          OAuth2Security:
+            - 'client_id'
+            - 'acccess_token'
+  /brands: 
+    get: 
+      summary: "Método para obter os dados de identificação das marcas do Open Finance."
+      description: "Método para obter os dados de identificação das marcas do Open Finance."
+      parameters: 
+        - $ref: '#/components/parameters/Authorization'
+        - $ref: '#/components/parameters/client_id'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - $ref: '#/components/parameters/role'
+        - $ref: '#/components/parameters/status'
+      responses:
+        '200':
+          $ref: '#/components/responses/OKResponseBrandList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/OKResponseBrandList'
+      security:
+        - OpenId:
+            - openid
+          OAuth2Security:
+            - 'client_id'
+            - 'acccess_token'
+components:
+  schemas:
+    ClientData:
+      type: object
+      required:
+        - clientId
+        - branchCode
+        - accountNumber
+        - cooperative
+        - resources
+        - creationDateTime
+      properties:
+        clientId:
+          type: string
+          description: 'Identifica de forma única a conta do cliente.'
+          pattern: '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89AB][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+          maxLength: 36
+          example: '56168b39-5fd8-43d7-b039-0d0300457bf4'
+        branchCode:
+          type: string
+          description: 'Código da Agência da conta do cooperado.'
+          pattern: '\d{4}$'
+          maxLength: 4
+          example: '6272'
+        accountNumber:
+          type: string
+          description: 'Número da conta'
+          pattern: '^\d{8,20}$'
+          maxLength: 20
+          example: '94088392'
+        cooperative:
+          type: string
+          description: 'Número da cooperativa'
+          pattern: '\d{4}$'
+          maxLength: 4
+          example: '9999'
+        resources:
+          description: 'Recursos disponíveis dos dados do associado.'
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceData'
+          minItems: 1
+        creationDateTime:
+          description: 'Data e hora da cração do cliente no ecossistema do OPB, conforme especificação RFC-3339, formato UTC.'
+          type: string
+          maxLength: 20
+          format: date-time
+          example: '2021-05-21T08:30:00Z'
+      additionalProperties: false
+    BrandData:
+      type: object
+      required:
+        - brandId
+        - organisationId
+        - authorisationServerId
+        - name
+        - description
+        - logoUri
+        - status
+      properties:
+        brandId:
+          type: string
+          description: 'Identifica de forma única da marca.'
+          pattern: '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89AB][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+          maxLength: 36
+          example: '56168b39-5fd8-43d7-b039-0d0300457bf7'
+        organisationId:
+          type: string
+          description: 'Identifica de forma única o participante principal da marca.'
+          pattern: '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89AB][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+          maxLength: 36
+          example: '56168b39-5fd8-43d7-b039-0d0300457bf8'
+        authorisationServerId:
+          type: string
+          description: 'Identifica de forma única da marca o Authorisation Server da marca.'
+          pattern: '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89AB][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+          maxLength: 36
+          example: '56168b39-5fd8-43d7-b039-0d0300457bf7'
+        name:
+          type: string
+          description: 'Nome da marca.'
+          pattern: '[\w\W\s]*'
+          maxLength: 200
+        description:
+          type: string
+          description: 'Descrição da marca.'
+          pattern: '[\w\W\s]*'
+          maxLength: 200
+        logoUri:
+          description: 'URI do logo da marca.'
+          type: string
+          format: uri
+          pattern: '^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)$'
+          maxLength: 2000
+          example: 'https://unicred.com/logo.svg'
+        participants:
+          description: 'Participantes que compõem a marca.'
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantData'
+          minItems: 0
+        status:
+          type: string
+          description: 'Status da marca.'
+          pattern: '^[Active|Inactive]$'
+          maxLength: 8
+          example: 'Active'
+      additionalProperties: false
+    ParticipantData:
+      type: object
+      required:
+        - participantId
+        - name
+        - registrationNumber
+        - roles
+        - status
+      properties:
+        participantId:
+          type: string
+          description: 'Identifica de forma única da marca.'
+          pattern: '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89AB][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+          maxLength: 36
+          example: '56168b39-5fd8-43d7-b039-0d0300457bf9'
+        name:
+          type: string
+          description: 'Nome do participante.'
+          pattern: '[\w\W\s]*'
+          maxLength: 255
+          example: 'Nome do participante'
+        registrationNumber:
+          type: string
+          description: 'Número do registro do participante.'
+          pattern: '\d{14,20}$'
+          maxLength: 20
+          example: '99999999999999'
+        parentRegistrationNumber:
+          type: string
+          description: 'Número do registro do participante pai.'
+          pattern: '\d{14,20}$'
+          maxLength: 20
+          example: '99999999999999'
+        roles:
+          type: array
+          description: 'Lista de roles do participante da marca.'
+          minItems: 1
+          items:
+            type: string
+            description: 'Role do participante da marca.'
+            pattern: '[\w\W\s]*'
+            maxLength: 20
+            example: 'DADOS'
+        status:
+          type: string
+          description: 'Status da marca.'
+          pattern: '^(Active|Inactive)$'
+          maxLength: 8
+          example: 'Active'
+      additionalProperties: false
+    ResourceData:
+      type: object
+      required:
+        - resourceId
+        - type
+      properties:
+        resourceId:
+          type: string
+          description: 'Identifica de forma única do recurso.'
+          pattern: '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89AB][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+          maxLength: 36
+          example: '56168b39-5fd8-43d7-b039-0d0300457bf5'
+        type:
+          type: string
+          description: 'Tipo do recurso.'
+          pattern: '[\w\W\s]*'
+          maxLength: 255
+          example: 'ACCOUNT'
+      additionalProperties: false
+    Links:
+      type: object
+      description: Referências para outros recusos da API requisitada.
+      required:
+        - self
+      properties:
+        self:
+          type: string
+          format: uri
+          maxLength: 2000
+          description: URI completo que gerou a resposta atual.
+          example: 'https://api.e-unicred.com.br/unicred/open-finance/v1/clients'
+          pattern: '^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)$'
+        first:
+          type: string
+          format: uri
+          maxLength: 2000
+          description: URI da primeira página que originou essa lista de resultados. Restrição - Obrigatório quando não for a primeira página da resposta
+          example: 'https://api.e-unicred.com.br/unicred/open-finance/v1/clients'
+          pattern: '^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)$'
+        prev:
+          type: string
+          format: uri
+          maxLength: 2000
+          description: "URI da página anterior dessa lista de resultados. Restrição - \tObrigatório quando não for a primeira página da resposta"
+          example: 'https://api.e-unicred.com.br/unicred/open-finance/v1/clients'
+          pattern: '^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)$'
+        next:
+          type: string
+          format: uri
+          maxLength: 2000
+          description: URI da próxima página dessa lista de resultados. Restrição - Obrigatório quando não for a última página da resposta
+          example: 'https://api.e-unicred.com.br/unicred/open-finance/v1/clients'
+          pattern: '^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)$'
+        last:
+          type: string
+          format: uri
+          maxLength: 2000
+          description: URI da última página dessa lista de resultados. Restrição - Obrigatório quando não for a última página da resposta
+          example: 'https://api.e-unicred.com.br/unicred/open-finance/v1/clients'
+          pattern: '^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)$'
+      additionalProperties: false
+    Meta:
+      type: object
+      description: Meta informações referente à API requisitada.
+      required:
+        - requestDateTime
+      properties:
+        totalRecords:
+          type: integer
+          format: int32
+          description: Número total de registros no resultado
+          example: 1
+        totalPages:
+          type: integer
+          format: int32
+          description: Número total de páginas no resultado
+          example: 1
+        requestDateTime:
+          description: 'Data e hora da consulta, conforme especificação RFC-3339, formato UTC.'
+          type: string
+          maxLength: 20
+          format: date-time
+          example: '2021-05-21T08:30:00Z'
+      additionalProperties: false
+    ResponseClient:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/ClientData'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+    ResponseClientList:
+      type: object
+      required:
+        - data
+        - links
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientData'
+          minItems: 0
+          description: 'Lista de clientes que possui consentimento autorizado.'
+        links:
+          $ref: '#/components/schemas/Links'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+    ResponseBrand:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/BrandData'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+    ResponseBrandList:
+      type: object
+      required:
+        - data
+        - links
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandData'
+          minItems: 0
+          description: 'Lista de marcas participantes do Open Finance Brasil.'
+        links:
+          $ref: '#/components/schemas/Links'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+    ResponseError:
+      type: object
+      required:
+        - errors
+      properties:
+        errors:
+          type: array
+          minItems: 1
+          maxItems: 13
+          items:
+            type: object
+            required:
+              - code
+              - title
+              - detail
+            properties:
+              code:
+                description: Código de erro específico do endpoint
+                type: string
+                pattern: '[\w\W\s]*'
+                maxLength: 255
+              title:
+                description: Título legível por humanos deste erro específico
+                type: string
+                pattern: '[\w\W\s]*'
+                maxLength: 255
+              detail:
+                description: Descrição legível por humanos deste erro específico
+                type: string
+                pattern: '[\w\W\s]*'
+                maxLength: 2048
+            additionalProperties: false
+        meta:
+          $ref: '#/components/schemas/Meta'
+      additionalProperties: false
+  parameters:
+    clientId:
+      name: clientId
+      in: path
+      description: 'Identificador do cliente.'
+      required: true
+      schema:
+        type: string
+        pattern: '^[a-zA-Z0-9][a-zA-Z0-9\-]{0,99}$'
+        maxLength: 100
+    brandId:
+      name: brandId
+      in: path
+      description: 'Identificador da marca.'
+      required: true
+      schema:
+        type: string
+        pattern: '^[a-zA-Z0-9][a-zA-Z0-9\-]{0,99}$'
+        maxLength: 100
+    Authorization:
+      name: Authorization
+      in: header
+      description: "Cabeçalho HTTP padrão. Permite que as credenciais sejam fornecidas dependendo do tipo de recurso solicitado"
+      required: true
+      schema:
+        type: string
+        pattern: '[\w\W\s]*'
+        maxLength: 2048
+    client_id:
+      name: client_id
+      in: header
+      description: "Cabeçalho HTTP padrão com a identificação do App solicitante."
+      required: true
+      schema:
+        type: string
+        pattern: '[\w\W\s]*'
+        maxLength: 2048
+    page:
+      name: page
+      in: query
+      description: "Número da página que está sendo requisitada (o valor da primeira página é 1)."
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+        format: int32
+    pageSize:
+      name: page-size
+      in: query
+      description: "Quantidade total de registros por páginas."
+      schema:
+        type: integer
+        default: 25
+        minimum: 1
+        format: int32
+        maximum: 1000
+    role:
+      name: role
+      in: query
+      description: "Filtro de role da marca."
+      schema:
+        type: string
+        pattern: '[\w\W\s]*'
+        maxLength: 20
+        example: 'DADOS'
+    status:
+      name: status
+      in: query
+      description: "Filtro de role da marca."
+      schema:
+        type: string
+        pattern: '^(Active|Inactive)$'
+        maxLength: 8
+        example: 'Active'
+  responses:
+    OKResponseClientList:
+      description: Dados do cliente obtidos com sucesso.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseClientList'
+    OKResponseBrandList:
+      description: Dados da marca obtidos com sucesso.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseBrandList'
+    OKResponseClient:
+      description: Dados relativos ao cliente identificado pelo clientId obtidos com sucesso.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseClient'
+    OKResponseBrand:
+      description: Dados da marca identificada pelo brandId obtidos com sucesso.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseBrand'
+    BadRequest:
+      description: 'A requisição foi malformada, omitindo atributos obrigatórios, seja no payload ou através de atributos na URL.'
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+    Forbidden:
+      description: O token tem escopo incorreto ou uma política de segurança foi violada
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+    InternalServerError:
+      description: Ocorreu um erro no gateway da API ou no serviço
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+    MethodNotAllowed:
+      description: O consumidor tentou acessar o recurso com um método não suportado
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+    NotAcceptable:
+      description: A solicitação continha um cabeçalho Accept diferente dos tipos de mídia permitidos ou um conjunto de caracteres diferente de UTF-8
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+    NotFound:
+      description: O recurso solicitado não existe ou não foi implementado
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+    TooManyRequests:
+      description: 'A operação foi recusada, pois muitas solicitações foram feitas dentro de um determinado período ou o limite global de requisições concorrentes foi atingido'
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
+    Unauthorized:
+      description: Cabeçalho de autenticação ausente/inválido ou token inválido
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: '#/components/schemas/ResponseError'
